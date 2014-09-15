@@ -39,3 +39,8 @@ func TestDnsDomainLevels(t *testing.T) {
 	assert.Equal(t, dnsDomainLevels("www"), 0, "'www' should contain 0 domain levels")
 	assert.Equal(t, dnsDomainLevels("www.netscape.com"), 2, "'www.netscape.com' should contain 2 domain levels")
 }
+
+func TestShExpMatch(t *testing.T) {
+	assert.True(t, shExpMatch("http://home.netscape.com/people/ari/index.html", "*/ari/*"), "'http://home.netscape.com/people/ari/index.html' should match '*/ari/*'")
+	assert.False(t, shExpMatch("http://home.netscape.com/people/montulli/index.html", "*/ari/*"), "'http://home.netscape.com/people/montulli/index.html' should not match '*/ari/*'")
+}

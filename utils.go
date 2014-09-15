@@ -3,6 +3,7 @@ package gopac
 import (
 	"net"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/robertkrimen/otto"
@@ -95,6 +96,17 @@ func myIpAddress() otto.Value {
 	return otto.UndefinedValue()
 }
 
+// dnsDomainLevels returns the number of domain levels in the host.
 func dnsDomainLevels(host string) int {
 	return strings.Count(host, ".")
+}
+
+// shExpMatch returns true if the string matches the specified shell expression.
+func shExpMatch(str, shexp string) bool {
+	shexp = strings.Replace(shexp, ".", "\\.", -1)
+	shexp = strings.Replace(shexp, "?", ".?", -1)
+	shexp = strings.Replace(shexp, "*", ".*", -1)
+	matched, err := regexp.MatchString(shexp, "^"+str+"$")
+
+	return err == nil && matched
 }
