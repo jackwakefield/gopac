@@ -1,9 +1,8 @@
 package gopac
 
 import (
+	"net"
 	"strings"
-
-	"github.com/miekg/dns"
 )
 
 const dnsServer = "8.8.8.8:53"
@@ -39,14 +38,30 @@ func isResolvable(host string) bool {
 		return false
 	}
 
-	client := new(dns.Client)
-	message := new(dns.Msg)
-	message.SetQuestion(dns.Fqdn(host), dns.TypeA)
-	reply, _, err := client.Exchange(message, dnsServer)
+	address, err := net.ResolveIPAddr("ip4", host)
 
-	if err != nil {
+	if err != nil || address == nil {
 		return false
 	}
 
-	return reply != nil && reply.Rcode == dns.RcodeSuccess
+	return true
+}
+
+// isInNet returns true if the IP address of the host matches the specified IP
+// address pattern.
+// mask is the pattern informing which parts of the IP address to match against.
+// 0 means ignore, 255 means match.
+func isInNet(host, pattern, mask string) bool {
+	if len(host) == 0 {
+		return false
+	}
+
+	address, err := net.ResolveIPAddr("ip4", host)
+
+	if err != nil || address == nil {
+		return false
+	}
+
+	maskIp := net.IPMask(net.ParseIP(mask))
+	return address.IP.Mask(maskIp).String() == pattern
 }

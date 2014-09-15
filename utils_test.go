@@ -25,6 +25,7 @@ func TestLocalHostOrDomainIs(t *testing.T) {
 }
 
 func TestIsResolvable(t *testing.T) {
-	assert.True(t, isResolvable("www.netscape.com"), "'www.netscape.com' should be resolvable")
-	assert.False(t, isResolvable("foobar.foobar.foobar"), "'foobar.foobar.foobar' should not be resolvable")
+	assert.True(t, isInNet("localhost", "127.0.0.1", "255.255.255.255"), "'localhost' should equal 127.0.0.1 with the mask 255.255.255.255")
+	assert.True(t, isInNet("localhost", "127.0.0.0", "255.0.0.0"), "'localhost' should equal 127.0.0.1 with the mask 255.0.0.0")
+	assert.False(t, isInNet("localhost", "127.0.0.0", "255.0.0.255"), "'localhost' should not equal 127.0.0.1 with the mask 255.0.0.255")
 }
