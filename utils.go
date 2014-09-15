@@ -5,22 +5,11 @@ import (
 	"os"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/robertkrimen/otto"
 )
 
 const dnsServer = "8.8.8.8:53"
-
-var weekDays = map[string]time.Weekday{
-	"SUN": time.Sunday,
-	"MON": time.Monday,
-	"TUE": time.Tuesday,
-	"WED": time.Wednesday,
-	"THU": time.Thursday,
-	"FRI": time.Friday,
-	"SAT": time.Saturday,
-}
 
 // isPlainHostName return true if there is no domain name in the host.
 func isPlainHostName(host string) bool {
@@ -120,35 +109,4 @@ func shExpMatch(str, shexp string) bool {
 	matched, err := regexp.MatchString(shexp, "^"+str+"$")
 
 	return err == nil && matched
-}
-
-// weekdayRange returns true if the current weekday is between wd1 and wd2.
-// If wd2 is unspecified, weekdayRange returns true if the weekday matches wd1.
-func weekdayRange(wd1, wd2, gmt string) bool {
-	if _, ok := weekDays[wd1]; !ok {
-		return false
-	}
-
-	if wd2 == "GMT" {
-		gmt = wd2
-		wd2 = ""
-	}
-
-	now := time.Now()
-
-	if gmt == "GMT" {
-		now = now.UTC()
-	}
-
-	if wd2 == "" {
-		return now.Weekday() == weekDays[wd1]
-	}
-
-	if weekDays[wd1] > weekDays[wd2] {
-		weekDay1 := weekDays[wd1]
-		weekDays[wd2] = weekDays[wd1]
-		weekDays[wd1] = weekDay1
-	}
-
-	return weekDays[wd1] <= now.Weekday() && weekDays[wd2] >= now.Weekday()
 }
