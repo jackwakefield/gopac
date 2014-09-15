@@ -15,3 +15,14 @@ func dnsDomainIs(host, domain string) bool {
 
 	return strings.HasSuffix(host, domain)
 }
+
+// localHostOrDomainIs returns true if the host matches the specified hostdom,
+// or if there is no domain name part in the host, but the unqualified hostdom
+// matches.
+func localHostOrDomainIs(host, hostdom string) bool {
+	if host == hostdom {
+		return true
+	}
+
+	return strings.LastIndex(hostdom, host+".") == 0
+}
