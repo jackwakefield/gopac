@@ -34,3 +34,8 @@ func TestDnsResolve(t *testing.T) {
 	assert.Equal(t, dnsResolve("localhost"), "127.0.0.1", "'localhost' should equal 127.0.0.1")
 	assert.Equal(t, dnsResolve("invalid"), "", "'invalid' should be empty")
 }
+
+func TestDnsDomainLevels(t *testing.T) {
+	assert.Equal(t, dnsDomainLevels("www"), 0, "'www' should contain 0 domain levels")
+	assert.Equal(t, dnsDomainLevels("www.netscape.com"), 2, "'www.netscape.com' should contain 2 domain levels")
+}

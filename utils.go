@@ -94,3 +94,7 @@ func myIpAddress() otto.Value {
 
 	return otto.UndefinedValue()
 }
+
+func dnsDomainLevels(host string) int {
+	return strings.Count(host, ".")
+}
