@@ -2,7 +2,10 @@ package gopac
 
 import (
 	"net"
+	"os"
 	"strings"
+
+	"github.com/robertkrimen/otto"
 )
 
 const dnsServer = "8.8.8.8:53"
@@ -73,4 +76,21 @@ func dnsResolve(host string) string {
 	}
 
 	return address.String()
+}
+
+// myIpAddress returns the IP address of the host machine.
+func myIpAddress() otto.Value {
+	hostname, err := os.Hostname()
+
+	if err != nil {
+		return otto.UndefinedValue()
+	}
+
+	address := dnsResolve(hostname)
+
+	if value, err := otto.ToValue(address); err == nil {
+		return value
+	}
+
+	return otto.UndefinedValue()
 }
