@@ -23,3 +23,8 @@ func TestLocalHostOrDomainIs(t *testing.T) {
 	assert.False(t, localHostOrDomainIs("www.mcom.com", "wwww.netscape.com"), "'www.mcom.com' should not be as it contains a domain part")
 	assert.False(t, localHostOrDomainIs("home.netscape.com", "wwww.netscape.com"), "'home.netscape.com' should not be as it contains a domain part")
 }
+
+func TestIsResolvable(t *testing.T) {
+	assert.True(t, isResolvable("www.netscape.com"), "'www.netscape.com' should be resolvable")
+	assert.False(t, isResolvable("foobar.foobar.foobar"), "'foobar.foobar.foobar' should not be resolvable")
+}

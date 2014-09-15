@@ -1,6 +1,12 @@
 package gopac
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/miekg/dns"
+)
+
+const dnsServer = "8.8.8.8:53"
 
 // isPlainHostName return true if there is no domain name in the host.
 func isPlainHostName(host string) bool {
@@ -25,4 +31,22 @@ func localHostOrDomainIs(host, hostdom string) bool {
 	}
 
 	return strings.LastIndex(hostdom, host+".") == 0
+}
+
+// isResolvable returns true if the host is resolvable.
+func isResolvable(host string) bool {
+	if len(host) == 0 {
+		return false
+	}
+
+	client := new(dns.Client)
+	message := new(dns.Msg)
+	message.SetQuestion(dns.Fqdn(host), dns.TypeA)
+	reply, _, err := client.Exchange(message, dnsServer)
+
+	if err != nil {
+		return false
+	}
+
+	return reply != nil && reply.Rcode == dns.RcodeSuccess
 }

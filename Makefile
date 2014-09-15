@@ -7,3 +7,4 @@ test:
 install_deps:
 	go get github.com/robertkrimen/otto
 	go get github.com/stretchr/testify
+	go get github.com/miekg/dns
