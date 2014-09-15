@@ -38,9 +38,7 @@ func isResolvable(host string) bool {
 		return false
 	}
 
-	address, err := net.ResolveIPAddr("ip4", host)
-
-	if err != nil || address == nil {
+	if _, err := net.ResolveIPAddr("ip4", host); err != nil {
 		return false
 	}
 
@@ -58,10 +56,21 @@ func isInNet(host, pattern, mask string) bool {
 
 	address, err := net.ResolveIPAddr("ip4", host)
 
-	if err != nil || address == nil {
+	if err != nil {
 		return false
 	}
 
 	maskIp := net.IPMask(net.ParseIP(mask))
 	return address.IP.Mask(maskIp).String() == pattern
+}
+
+// dnsResolve returns the IP address of the host.
+func dnsResolve(host string) string {
+	address, err := net.ResolveIPAddr("ip4", host)
+
+	if err != nil {
+		return ""
+	}
+
+	return address.String()
 }

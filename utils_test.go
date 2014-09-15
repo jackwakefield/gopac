@@ -29,3 +29,8 @@ func TestIsResolvable(t *testing.T) {
 	assert.True(t, isInNet("localhost", "127.0.0.0", "255.0.0.0"), "'localhost' should equal 127.0.0.1 with the mask 255.0.0.0")
 	assert.False(t, isInNet("localhost", "127.0.0.0", "255.0.0.255"), "'localhost' should not equal 127.0.0.1 with the mask 255.0.0.255")
 }
+
+func TestDnsResolve(t *testing.T) {
+	assert.Equal(t, dnsResolve("localhost"), "127.0.0.1", "'localhost' should equal 127.0.0.1")
+	assert.Equal(t, dnsResolve("invalid"), "", "'invalid' should be empty")
+}
