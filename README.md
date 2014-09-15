@@ -1,4 +1,4 @@
-# GoPac
+# GoPac [![](http://img.shields.io/travis/jackwakefield/gopac.svg?style=flat-square)](http://travis-ci.org/jackwakefield/gopac) 
 
 GoPac is a package for parsing and using proxy auto-config (PAC) files.
 
