@@ -18,6 +18,8 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 )
 
 // Parser provides an interface to parse and utilise proxy auto-config (PAC)
@@ -101,4 +103,32 @@ func (parser *Parser) FindProxy(url, host string) (string, error) {
 	}
 
 	return parser.rt.findProxyForURL(url, host)
+}
+
+// SetupPacProxy returns nil if given url is defined in PAC file (DIRECT)
+// else it converts proxy entry as URL and returns it
+func SetupPacProxy(pacFile *Parser) func(req *http.Request) (*url.URL, error) {
+	return func(req *http.Request) (*url.URL, error) {
+		result, errResult := pacFile.FindProxy("", req.URL.Host)
+
+		if errResult != nil {
+			return nil, errResult
+		}
+
+		if strings.Contains(result, "DIRECT") {
+			return nil, nil
+		}
+
+		var urlProxy string
+
+		host := strings.Replace(result, "PROXY ", "", -1)
+		urlProxy = "http://" + host
+
+		proxyURL, errParse := url.Parse(urlProxy)
+		if errParse != nil {
+			return nil, errResult
+		}
+
+		return proxyURL, nil
+	}
 }

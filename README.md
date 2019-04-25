@@ -12,7 +12,9 @@ go get github.com/jackwakefield/gopac
 
 [See GoDoc](http://godoc.org/github.com/jackwakefield/gopac) for documentation.
 
-## Example
+## Examples
+
+### How to parse PAC file
 
 ```go
 package main
@@ -41,6 +43,35 @@ func main() {
 
 	log.Println(entry)
 }
+```
+
+### How to use PAC file with proxy
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/jackwakefield/gopac"
+)
+
+func main() {
+	parser := new(gopac.Parser)
+
+	// use parser.Parse(path) to parse a local file
+	// or parser.ParseUrl(url) to parse a remote file
+	if err := parser.ParseUrl("http://immun.es/pac"); err != nil {
+		log.Fatalf("Failed to parse PAC (%s)", err)
+	}
+ 
+	// if given url is defined in PAC file, Proxy is nil because connection is direct
+	// if given url is not defined in PAC file, Proxy is equal to a particular proxy server
+	transport := &http.Transport{Proxy: SetupPacProxy(parser)}
+	http.DefaultTransport.(*http.Transport).Proxy = transport.Proxy
+}
+
 ```
 
 ## License
